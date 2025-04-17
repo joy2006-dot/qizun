@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sketch</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script src="libraries/p5.min.js"></script>
+    <script src="libraries/p5.sound.min.js"></script>
+
+    <style>
+      /* 定义菜单样式 */
+      .menu {
+        position: fixed; /* 固定在页面顶部 */
+        top: 0;
+        left: 0;
+        width: 100%;
+        list-style: none;
+        display: flex;
+        gap: 15px;
+        margin: 0;
+        padding: 10px;
+        background-color: #ffffff; /* 菜单背景色 */
+        z-index: 1000; /* 确保菜单在最上层 */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+      }
+
+      .menu li {
+        cursor: pointer;
+        padding: 5px 10px;
+        background-color: #ffffff; /* 初始背景色为白色 */
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        position: relative;
+      }
+
+      .menu li:hover {
+        background-color: #ffa500; /* 悬停时背景色为橙色 */
+      }
+
+      /* 子菜单样式 */
+      .submenu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        background-color: #ffffff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        z-index: 1001; /* 确保子菜单在菜单上方 */
+      }
+
+      .submenu li {
+        padding: 5px 10px;
+        white-space: nowrap;
+      }
+
+      .submenu li:hover {
+        background-color: #ffa500;
+      }
+
+      /* 显示子菜单 */
+      .menu li:hover .submenu {
+        display: block;
+      }
+
+      /* iframe 样式 */
+      iframe {
+        position: absolute;
+        top: 50px; /* 留出菜单的高度 */
+        left: 0;
+        width: 100%;
+        height: calc(100% - 50px); /* 减去菜单的高度 */
+        border: none;
+        z-index: 500; /* 确保 iframe 在菜单下方 */
+      }
+
+      /* sketch.js 画布样式 */
+      canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 0; /* 确保画布在最底层 */
+      }
+
+      /* 箭头样式 */
+      .arrows {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        gap: 10px;
+        z-index: 1002; /* 确保箭头在菜单上方 */
+      }
+
+      .arrow {
+        cursor: pointer;
+        padding: 5px 10px;
+        background-color: #6f4e37; /* 咖啡色 */
+        color: #ffffff;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        transition: background-color 0.3s;
+      }
+
+      .arrow:hover {
+        background-color: #5a3c2a; /* 深咖啡色 */
+      }
+
+      /* 歡迎圖片和文字樣式 */
+      .welcome-container {
+        text-align: center;
+        margin-top: 100px; /* 調整距離頂部的間距 */
+      }
+
+      .welcome-image {
+        width: 300px; /* 原始寬度 150px，放大 5 倍 */
+        height: auto; /* 保持圖片比例 */
+      }
+
+      .welcome-text {
+        font-size: 24px; /* 調整文字大小 */
+        color: #333; /* 調整文字顏色 */
+        margin-top: 10px; /* 調整文字與圖片的間距 */
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- 菜单 -->
+    <ul class="menu">
+      <li>首頁</li>
+      <li>
+        子我介紹
+        <ul class="submenu">
+          <li><a href="about.html" target="content-frame">413730887許婕芸</a></li>
+        </ul>
+      </li>
+      <li>
+        作品集
+        <ul class="submenu">
+          <li><a href="https://hackmd.io/@yG5IEX5UQ-GTqA-JAIpBiw/SyWWAg8Ayx" target="content-frame">第一周</a></li>
+          <li><a href="https://www.san-x.co.jp/rilakkuma/" target="content-frame">第二周</a></li>
+          <li><a href="https://joy2006-dot.github.io/jisuan/" target="content-frame">第三周</a></li>
+          <li><a href="https://joy2006-dot.github.io/quizun/" target="content-frame">第四週</a></li>
+          <li>第五周</li>
+          <li>第六周</li>
+          <li>第七周</li>
+          <li>第八周</li>
+          <li>第九周</li>
+          <li>第十周</li>
+        </ul>
+      </li>
+      <li><a href="https://joy2006-dot.github.io/chiyian/" target="content-frame">測驗題</a></li>
+      <li>教學影片</li>
+    </ul>
+
+    <!-- 歡迎圖片 -->
+    <div class="welcome-container">
+      <img src="images/welcome.png" alt="歡迎圖片" class="welcome-image" />
+      <p class="welcome-text">歡迎光臨其中作業！</p>
+    </div>
+
+    <!-- iframe 用于显示第二层内容 -->
+    <iframe name="content-frame"></iframe>
+
+    <!-- sketch.js -->
+    <script src="sketch.js"></script>
+
+    <script>
+      // JavaScript 控制上一步和下一步
+      let currentStep = 0;
+      const steps = [
+        "https://hackmd.io/@yG5IEX5UQ-GTqA-JAIpBiw/SyWWAg8Ayx",
+        "https://www.san-x.co.jp/rilakkuma/",
+        "https://joy2006-dot.github.io/jisuan/",
+        "https://joy2006-dot.github.io/quizun/",
+        "https://joy2006-dot.github.io/chiyian/"
+      ];
+
+      function previousStep() {
+        if (currentStep > 0) {
+          currentStep--;
+          document.querySelector("iframe").src = steps[currentStep];
+        }
+      }
+
+      function nextStep() {
+        if (currentStep < steps.length - 1) {
+          currentStep++;
+          document.querySelector("iframe").src = steps[currentStep];
+        }
+      }
+    </script>
+  </body>
+</html>
